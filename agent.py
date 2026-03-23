@@ -29,12 +29,7 @@ load_dotenv(override=True)
 console = Console()
 
 # ==========================================
-# 1. The 3-Tool Schema 
-# (Note: Responses API handles tools slightly differently, 
-# but the core JSON schema structure remains the foundation)
-# ==========================================
-# ==========================================
-# 1. The 3-Tool Schema (Responses API Flattened Format)
+#  1. Tool Schema 
 # ==========================================
 TOOLS = [
     {
@@ -79,6 +74,9 @@ TOOLS = [
 # 2. Conversational Agent Logic (Responses API)
 # ==========================================
 def run_agent():
+
+    # override so it will not grab OPENAI_API_KEY from global env vars.
+    # the agent will use only the key supplied in setup
     load_dotenv(override=True)
 
     ascii_path = Path(__file__).resolve().parent / "assets" / "ascii.txt"
@@ -88,15 +86,7 @@ def run_agent():
 
     api_key = os.getenv("OPENAI_API_KEY")
     email_name = os.getenv("EMAIL_NAME")
-    
-    # if not api_key:
-    #     api_key = Prompt.ask("[bold cyan]Please enter your OpenAI API Key[/bold cyan]", password=True)
-    #     os.environ["OPENAI_API_KEY"] = api_key
 
-    # user_name = os.getenv("AGENT_USER_NAME")
-    # if not user_name:
-    #     user_name = Prompt.ask("[bold cyan]What is your name? (Used for email signatures)[/bold cyan]")
-    #     os.environ["AGENT_USER_NAME"] = user_name
     client = OpenAI(api_key=api_key)
     
     with console.status("[dim]Authenticating with Gmail...[/dim]"):
@@ -106,7 +96,6 @@ def run_agent():
     state_fetched_email = None
     state_current_draft = None
 
-    # --- NEW: Dedicated Instructions Parameter ---
     agent_instructions = f"""
 You are an email reply assistant.
 
@@ -122,38 +111,17 @@ Rules:
 8. Only call send_approved_email after an explicit approval such as "send it", "looks good", or "approve".
 9. Keep normal chat responses short.
 """
-    # agent_instructions = f"""You are an elite, conversational AI email assistant. 
-    # Your rules:
-    # 1. Greet the user naturally and ask how you can help.
-    # 2. Use 'search_gmail_by_subject' when they tell you what to look for. If nothing is found, ask for a different keyword. Only one query at a time.
-    # 3. Once an email is found, READ IT and WRITE A PROFESSIONAL REPLY- dont wait for a prompt using 'save_and_display_draft' tool.
     
-    # 4. Use the 'save_and_display_draft' tool to securely pass your newly drafted reply to the system.
-    # 1. When a user provides feedback or a change (e.g., "add snacks"), you MUST immediately call 'save_and_display_draft' with the UPDATED text..
-    # 5. CRITICAL: NEVER repeat the text of the draft in your conversational response.
-    # 6. Once they approve the draft, call 'send_approved_email'.
-    # Never output raw JSON to the user. Keep conversation friendly but concise."""
 
-    # --- NEW: Input History contains ONLY conversation, no system prompt ---
+    # --- history inits with intro message ---
     conversation_history = [
         {"role": "user", "content": "Hello. Please introduce yourself briefly and ask me what email subject I am looking for today."}
     ]
 
-    #console.print(Panel.fit("[bold cyan] Conversational Gmail Agent (Responses API)[/bold cyan]\n[dim]Type 'quit' to exit.[/dim]", border_style="cyan"))
-    last_response_id = None
-
     while True:
-        
-        # print("############CURRETNT     DRAFT##############")
-        # print("------",state_current_draft,"---------")
-        # print("############CURRETNT     EMAIL##############")
-        # print("------",state_fetched_email,"---------")
-        # print("############CONVO     HISTORY##############")
-        # print("------",conversation_history,"---------")
         with console.status("[dim]Agent is typing...[/dim]", spinner="dots"):
             try:
                 response = client.responses.create(
-                    #model="gpt-4o-mini",
                     model="gpt-4.1-mini",
                     instructions=agent_instructions,
                     input=conversation_history,
@@ -171,9 +139,8 @@ Rules:
                     "Often this is an invalid model name, bad tool/message format, or a parameter the API does not accept."
                 )
                 console.print(f"[dim]{e}[/dim]")
-                return
-            last_response_id = response.id
-        
+                return 
+
         # if to ask a follow up question
         requires_user_input = False
 
@@ -211,7 +178,7 @@ Rules:
                     state_current_draft = args.get("draft_text") 
                     draft_ui = f"[bold dim]To:[/bold dim] {state_fetched_email.get('sender')}\n"
                     draft_ui += "-" * 40 + "\n" + state_current_draft
-                    console.print(Panel(draft_ui, title="[bold green]AI Suggested Draft[/bold green]", border_style="green"))
+                    console.print(Panel.fit(draft_ui, title="[bold green]AI Suggested Draft[/bold green]", border_style="green"))
                     
                     conversation_history.append({
                         "type": "function_call_output",
@@ -232,14 +199,6 @@ Rules:
                             "call_id": item.call_id,
                             "output": error_msg
                         })
-
-                        # assistant_msg = "Please input your name for the email signature."
-                        # conversation_history.append({
-                        #     "role": "assistant",
-                        #     "content": assistant_msg
-                        # })
-                        # console.print(f"\n[bold purple]Agent:[/bold purple] {assistant_msg}")
-                        # requires_user_input = True
                         continue
 
                     with console.status("[dim]Executing secure send...[/dim]"):

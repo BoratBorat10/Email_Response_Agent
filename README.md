@@ -1,15 +1,15 @@
-# Email Agent
+# Email Response Agent
 
 ![CLI](/assets/image_cr.png)
 
 ## About
 
-Email Agent is a Python CLI that helps users search for an email, draft a reply, revise that reply, and send it. The user describes what they are looking for in natural language, the agent retrieves the relevant email, and then composes a suggested response. The user can approve the draft, request changes, or send it.
+Email Response Agent is a Python CLI that helps users search for an email, draft a reply, revise that reply, and send it. The user describes what they are looking for in natural language, the agent retrieves the relevant email, and then composes a suggested response. The user can approve the draft, request changes, or send it.
 
 ## Key Features
 
 - **Deterministic state control**: the model drafts, but the program owns what gets stored and sent; the draft shown to the user is always exactly what gets sent, never a fresh regeneration
-- **Natural language search**: describe the email you're looking for in plain English; no query syntax required
+
 - **Guided setup**: a first-run script validates prerequisites, prompts for credentials, and writes the .env so the agent is ready to use immediately
 - **Placeholder guardrail**: outgoing emails are checked for signature placeholders like `[Your name]` before sending; if one is detected, the send is blocked and the model prompts the user to resolve it
 
@@ -25,8 +25,7 @@ Before getting started, make sure you have:
 
 1. A `credentials.json` file from a Google Cloud project with Gmail API access
 2. An OpenAI API key
-3. Python installed
-4. The project dependencies installed from `requirements.txt`
+
 
 ### Google Cloud Project Credentials
 
@@ -42,7 +41,7 @@ To access Gmail for searching and sending email, you need to create and authoriz
    * Search for **Gmail API** and enable it
 3. Initialize Auth
 
-    * Go though [Project configuration]((https://console.cloud.google.com/auth/overview/create))
+    * Go through [Project configuration](https://console.cloud.google.com/auth/overview/create)
     * Select `External` project type
 
 4. Set up Scopes
@@ -73,7 +72,7 @@ Create an API key from the [OpenAI platform](https://platform.openai.com/api-key
 
 ## Installation
 
-1. Download the project.
+1. Download or clone the project.
 2. Open a terminal in the project folder.
 3. *Optional*: Create and activate a virtual environment.
 4. Install the dependencies.
@@ -111,11 +110,16 @@ It will:
 * Validate that `credentials.json` exists
 * Prompt you for your OpenAI API key
 * Prompt you for the name to use in the email signature
-* Create and populate `.env` file
+* Create and populate the `.env` file
 
 On the first run, a browser window will also open and prompt you to allow access to your Google account.
 
 After setup is complete, the Agent is ready to use and will start.
+
+Type the subject you are looking for and the agent will retive it and draft a reply.
+
+> [!NOTE]
+> The prompt for the OpenAI API key in the terminal is a password field. You will not see what you type. Paste and press Enter
 
 ## Technical Overview
 
