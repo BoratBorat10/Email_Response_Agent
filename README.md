@@ -59,8 +59,8 @@ To access Gmail for searching and sending email, you need to create and authoriz
    * Choose **Desktop app** as the application type
    * Click `Download JSON` and download the credentials file
 
-    > [!IMPORTANT]
-    > Remember to move this file to the root folder of the project and to rename it `credentials.json`
+> [!IMPORTANT]
+> Remember to move this file to the root folder of the project and to rename it `credentials.json`
 
 6. Add test users
 
