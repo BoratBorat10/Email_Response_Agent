@@ -17,7 +17,7 @@ try:
     from tools import search_gmail_by_subject, send_reply, has_signature_placeholder
 except ImportError as e:
     print(
-        "Missing a dependency. From the project root, run:\n"
+        "Missing a dependency. Run:\n"
         "  pip install -r requirements.txt",
         file=sys.stderr,
     )
