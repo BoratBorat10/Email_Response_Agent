@@ -32,19 +32,37 @@ Before getting started, make sure you have:
 
 To access Gmail for searching and sending email, you need to create and authorize a Google Cloud project.
 
-1. Create a new [Google Cloud project](https://console.cloud.google.com/projectcreate).
-2. Enable the Gmail API.
+> [!TIP]
+> The names of items are not significant and can be anything you choose.
+
+1. Create a new [Google Cloud project](https://console.cloud.google.com/projectcreate)
+2. Enable the Gmail API
 
    * Go to **APIs & Services** → **Enable APIs and Services**
    * Search for **Gmail API** and enable it
-3. Create OAuth [credentials](https://console.developers.google.com/auth/clients).
+3. Initialize Auth
 
-   * Configure the OAuth consent screen if prompted
-   * Select the Gmail scope needed for the app
+    * Go though [Project configuration]((https://console.cloud.google.com/auth/overview/create))
+    * Select `External` project type
+
+4. Set up Scopes
+
+    * Go to [Data Access](https://console.cloud.google.com/auth/scopes)
+    * Click `Add or remove scopes`
+    * Scroll to bottom to `Manually add scopes`
+    * Add: `https://mail.google.com/`
+    * Click `Add to Table` then `Update`
+
+
+5. Create OAuth Client [credentials](https://console.developers.google.com/auth/clients/create)
+
    * Choose **Desktop app** as the application type
-   * Download the credentials file
-   * Move it to the project root and rename it to `credentials.json`
-4. Add test users.
+   * Click `Download JSON` and download the credentials file
+
+    > [!IMPORTANT]
+    > Remember to move this file to the root folder of the project and to rename it `credentials.json`
+
+6. Add test users
 
    * The app is in testing mode, every user must be added as a test user
    * In the [Audience](https://console.cloud.google.com/auth/audience) settings → Test users → add your email address that will use the app
