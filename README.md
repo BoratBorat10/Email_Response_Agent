@@ -61,8 +61,14 @@ Create an API key from the [OpenAI platform](https://platform.openai.com/api-key
 4. Install the dependencies.
 
 ```bash
+
+# GIT clone the repo
+git clone https://github.com/BoratBorat10/Email_Response_Agent.git
+cd Email_Response_Agent
+
+
 # Create a virtual environment
-python3 -m venv .venv
+python -m venv .venv
 
 # Activate it
 # macOS / Linux
@@ -88,6 +94,8 @@ It will:
 * Prompt you for your OpenAI API key
 * Prompt you for the name to use in the email signature
 * Create and populate `.env` file
+
+On the first run, a browser window will also open and prompt you to allow access to your Google account.
 
 After setup is complete, the Agent is ready to use and will start.
 
@@ -155,7 +163,6 @@ This design ensures predictability. The recipient, subject, thread information, 
 ## Main Agent Loop
 Example flow:
 
-%![CLI](/assets/mermaid-diagram.png)%
 ```mermaid
 flowchart TD;
     A["Agent: Hi, I’m your email assistant. What email are you looking for?"] --> B["User: Something about a package"]
