@@ -34,10 +34,13 @@ To access Gmail for searching and sending email, you need to create and authoriz
 > [!TIP]
 > The names of items are not significant and can be anything you choose.
 
+> [!TIP]
+> If you have multiple projects, make sure that you are in the right one through this process.
+
 1. Create a new [Google Cloud project](https://console.cloud.google.com/projectcreate)
 2. Enable the Gmail API
 
-   * Go to **APIs & Services** → **Enable APIs and Services**
+   * Go to [APIs & Services](https://console.cloud.google.com/apis/dashboard) → Enable APIs and Service
    * Search for **Gmail API** and enable it
 3. Initialize Auth
 
