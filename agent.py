@@ -23,7 +23,6 @@ except ImportError as e:
     print(f"Import error: {e}", file=sys.stderr)
     raise SystemExit(1) from None
 
-load_dotenv(override=True)
 
 console = Console()
 
@@ -221,18 +220,17 @@ Rules:
                     else:
                         console.print(f"\n[bold green]Reply successfully sent to {state_fetched_email.get('sender')}[/bold green]\n")
                     conversation_history.append({"type": "function_call_output", "call_id": item.call_id, "output": json.dumps(result)})
-                    # requires_user_input = True # Prompt user for next task
 
             # Action B: The LLM is talking to the user
             elif item.type == "message":
-                # Extract text using the new Responses API structure
+                # Extract text using the Responses API structure
                 assistant_reply = item.content[0].text if item.content else ""
                 if assistant_reply:
                     console.print(f"\n[bold purple]Agent:[/bold purple] {assistant_reply}")
                     conversation_history.append({"role": "assistant", "content": assistant_reply})
                     requires_user_input = True
         
-        # After processing all outputs, if the agent spoke or finished a task, ask the human
+        # After processing all outputs, if the agent spoke or finished a task, ask the user
         if requires_user_input:
             user_input = Prompt.ask("\n[bold blue]You[/bold blue]")
             if user_input.lower() in ['q', 'quit', 'exit']:
