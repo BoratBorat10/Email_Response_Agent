@@ -1,8 +1,7 @@
 import json
 import os
 import sys
-from pathlib import Path
-from typing import Text
+
 
 try:
     from dotenv import load_dotenv
@@ -13,7 +12,7 @@ try:
     from rich.text import Text
 
     from auth import get_gmail_service
-    from setup import is_setup_complete, run_setup
+    from setup import is_setup_complete, run_setup, ascii_print
     from tools import search_gmail_by_subject, send_reply, has_signature_placeholder
 except ImportError as e:
     print(
@@ -79,10 +78,7 @@ def run_agent():
     # the agent will use only the key supplied in setup
     load_dotenv(override=True)
 
-    ascii_path = Path(__file__).resolve().parent / "assets" / "ascii.txt"
-    if ascii_path.is_file():
-        ascii_art = ascii_path.read_text(encoding="utf-8")
-        console.print(Panel.fit(ascii_art, border_style="cyan", title=Text('Yaron Gefen- Home Assignment', style=""), title_align="left"))
+    
 
     api_key = os.getenv("OPENAI_API_KEY")
     email_name = os.getenv("EMAIL_NAME")
@@ -104,12 +100,12 @@ Rules:
 2. When the user gives a subject or keyword, call search_gmail_by_subject.
 3. If an email is found, immediately draft a reply and call save_and_display_draft in the same turn.
 4. Do not ask the user whether they want to reply before drafting.
-4.5 Use {email_name} as the email signature
 5. Do not ask the user what message to include before drafting.
-6. After calling save_and_display_draft, do not repeat or quote the draft in a normal assistant message.
-7. If the user asks for a change, call save_and_display_draft again with the updated draft.
-8. Only call send_approved_email after an explicit approval such as "send it", "looks good", or "approve".
-9. Keep normal chat responses short.
+6. Use {email_name} as the email signature.
+7. After calling save_and_display_draft, do not repeat or quote the draft in a normal assistant message.
+8. If the user asks for a change, call save_and_display_draft again with the updated draft.
+9. Only call send_approved_email after an explicit approval such as "send it", "looks good", or "approve".
+10. Keep normal chat responses short.
 """
     
 
@@ -148,7 +144,6 @@ Rules:
             
             # Action A: The LLM used a Tool
             if item.type == "function_call":
-                # print(f"DEBUG: Agent is calling tool: {item.name}")
                 conversation_history.append({
                     "type": "function_call",
                     "id": item.id,
@@ -175,6 +170,15 @@ Rules:
                     })
                 
                 elif func_name == "save_and_display_draft":
+                    # must have something in the state- must run search before
+                    if not state_fetched_email:
+                        conversation_history.append({
+                            "type": "function_call_output",
+                            "call_id": item.call_id,
+                            "output": '{"error": "Cannot draft before an email has been fetched."}'
+                        })
+                        continue
+
                     state_current_draft = args.get("draft_text") 
                     draft_ui = f"[bold dim]To:[/bold dim] {state_fetched_email.get('sender')}\n"
                     draft_ui += "-" * 40 + "\n" + state_current_draft
@@ -211,7 +215,10 @@ Rules:
                             original_message_id=state_fetched_email.get('message_id')
                         )
                     
-                    console.print(f"\n[bold green]🚀 Reply successfully sent to {state_fetched_email.get('sender')}![/bold green]\n")
+                    if "error" in result:
+                        console.print(f"\n[bold red]Failed to send reply:[/bold red] {result['error']}\n")
+                    else:
+                        console.print(f"\n[bold green]Reply successfully sent to {state_fetched_email.get('sender')}[/bold green]\n")
                     conversation_history.append({"type": "function_call_output", "call_id": item.call_id, "output": json.dumps(result)})
                     # requires_user_input = True # Prompt user for next task
 
@@ -233,6 +240,7 @@ Rules:
             conversation_history.append({"role": "user", "content": user_input})
 
 if __name__ == "__main__":
+    ascii_print()
     try:
         if not is_setup_complete():
             ok = run_setup()

@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.theme import Theme
+from typing import Text
 
 custom_theme = Theme({
     "info": "cyan",
@@ -13,6 +14,10 @@ custom_theme = Theme({
     "success": "bold green"
 })
 console = Console(theme=custom_theme)
+
+
+
+
 
 
 def is_setup_complete():
@@ -95,6 +100,12 @@ def run_setup():
         console.print(f"[error]Failed to write .env file: {e}[/error]")
         return False
 
+
+def ascii_print():
+    ascii_path = Path(__file__).resolve().parent / "assets" / "ascii.txt"
+    if ascii_path.is_file():
+        ascii_art = ascii_path.read_text(encoding="utf-8")
+        console.print(Panel.fit(ascii_art, border_style="cyan", title_align="left"))
 
 if __name__ == "__main__":
     try:

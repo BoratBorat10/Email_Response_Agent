@@ -119,7 +119,7 @@ On the first run, a browser window will also open and prompt you to allow access
 
 After setup is complete, the Agent is ready to use and will start.
 
-Type the subject you are looking for and the agent will retive it and draft a reply.
+Type the subject you are looking for and the agent will retrieve it and draft a reply.
 
 > [!NOTE]
 > The prompt for the OpenAI API key in the terminal is a password field. You will not see what you type. Paste and press Enter
@@ -231,6 +231,11 @@ q = f"subject:({subject_query}) -from:me in:inbox"
 ```
 
 Without this filter, the search could return emails sent by the user, which would make replying nonsensical.
+
+
+### Search Query
+
+To keep the demo simple, the current implementation retrieves only the most recent *single* email matching the subject query. This is sufficient for demonstrating the core agent workflow in the context of the assignment. In a production setting, the application should present multiple matching results and allow the user to select the correct email before generating or sending a reply.
 
 ### Email Signature
 
