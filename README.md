@@ -201,7 +201,8 @@ flowchart TD;
 
     E -->|Send| F["Tool Call: send_approved_email
     (email_draft)"]
-    E -->|Change| G["User: Tell them that it has not arrived yet."]
+    E -->|Change| G["User: Tell them that it 
+    Shas not arrived yet."]
 
     G --> D
 ```
