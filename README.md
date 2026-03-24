@@ -190,7 +190,8 @@ Example flow:
 
 ```mermaid
 flowchart TD;
-    A["Agent: Hi, I’m your email assistant. What email are you looking for?"] --> B["User: Something about a package"]
+    A["Agent: Hi, I’m your email assistant. What email are you looking for?"] --> B["User: Something about
+     a package"]
     B --> C["Tool Call: search_gmail_by_subject
     (package)"]
     C --> D["Tool Call: save_and_display_draft
