@@ -63,7 +63,7 @@ def prompt_for_email_name():
 
 def run_setup():
     console.print(Panel.fit(
-        "[bold info]Gmail AI Agent, Environment Setup[/bold info]\n"
+        "[bold info]Email Agent: Environment Setup[/bold info]\n"
         "This script will configure your local environment.",
         border_style="info"
     ))

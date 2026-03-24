@@ -182,7 +182,7 @@ Rules:
                     state_current_draft = args.get("draft_text") 
                     draft_ui = f"[bold dim]To:[/bold dim] {state_fetched_email.get('sender')}\n"
                     draft_ui += "-" * 40 + "\n" + state_current_draft
-                    console.print(Panel.fit(draft_ui, title="[bold green]AI Suggested Draft[/bold green]", border_style="green"))
+                    console.print(Panel.fit(draft_ui, title="[bold green]Suggested Response[/bold green]", border_style="green"))
                     
                     conversation_history.append({
                         "type": "function_call_output",
