@@ -1,6 +1,5 @@
 /.venv
 /credentials.json
-/PERSONAL
 /token.json
 /__pycache__
 .env
