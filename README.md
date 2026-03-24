@@ -1,6 +1,6 @@
 # Email Response Agent
 
-![CLI](/assets/image_cr.png)
+![CLI](/assets/image_hero.png)
 
 ## About
 
